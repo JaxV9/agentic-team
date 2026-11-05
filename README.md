@@ -32,19 +32,20 @@ The development cycle is structured around 3 main phases: **Framing & Isolation*
 │ 🔄 Execution & Retroaction Loop (LangGraph - Max 3 iterations)         │
 │                                                                        │
 │   4. BACKEND & FRONTEND DEV AGENTS                                     │
-│        │ ─── (Implementation -> BACKEND_SUMMARY.md & FRONTEND_SUMMARY) │
+│        │ ─── (Implementation -> BACKEND_SUMMARY & FRONTEND_SUMMARY)   │
 │        ▼                                                               │
 │   5. CYBER SECURITY AGENT                                              │
-│        │ ─── (Audit -> docs/CYBER_REPORT.md)                            │
+│        ├── ❌ Security Flaws Detected ──> [Retry Devs/Architect]       │
+│        └── ✅ Security Gate Passed                                     │
 │        ▼                                                               │
 │   6. QA / TEST AGENT                                                   │
-│        │ ─── (Tests & Binary criteria -> docs/QA_REPORT.md)            │
+│        ├── ❌ Test Suite Failures ─────> [Retry Devs/Architect]       │
+│        └── ✅ Tests Passed                                             │
 │        ▼                                                               │
-│   7. PO AGENT (Phase 2: Review & Arbitrage)                            │
-│        │                                                               │
-│        ├── ❌ REJECTED (and Iteration < 3) ──> [Trigger retry loop]    │
-│        ├── ⚠️ REJECTED (and Iteration >= 3) ──> [Human Escalation]     │
-│        └── ✅ VALIDATED (GO) ───────────────> [Exit loop]             │
+│   7. PO AGENT (Phase 2: Review & Scope Audit)                          │
+│        ├── ❌ REJECTED (Scope Gap / Iteration < 3)  ──> [Retry Loop]   │
+│        ├── ⚠️ REJECTED (Scope Gap / Iteration >= 3) ──> [Human Escalation]
+│        └── ✅ VALIDATED (GO) ────────────────────────> [Exit loop]    │
 └────────────────────────────────────────────────────────────────────────┘
 │
 ▼
@@ -73,13 +74,14 @@ The development cycle is structured around 3 main phases: **Framing & Isolation*
 
 ---
 
-## 3. Retroaction Loop Management (LangGraph)
+## 3. Retroaction Loop & Rejection Gates (LangGraph)
 
-The workflow incorporates an automated retry loop managed by **LangGraph** in case of rejection by the Cyber, QA, or PO agent:
+The workflow incorporates multi-level rejection mechanisms managed by **LangGraph** (max **3 iterations** per global feature flow):
 
-1. **Iteration Counter:** Each pass through the loop increments the `iteration_count` variable (max: **3**).
-2. **Rejection (`REJECTED`) & Retry:** If defects or vulnerabilities are detected and `iteration_count < 3`, the PO agent drafts targeted corrective instructions and re-routes the task to the responsible agent (Architect, Backend Dev, or Frontend Dev).
-3. **Human Escalation:** If the package is still rejected after **3 iterations**, the workflow automatically pauses (`HUMAN_INTERVENTION_REQUIRED`) and requests direct human intervention.
+1. **Cyber Gate Rejection:** If `CYBER SECURITY AGENT` detects Critical or High security flaws, it immediately triggers an early retry loop back to the Developers/Architect without waiting for QA or PO review.
+2. **QA Gate Rejection:** If `QA / TEST AGENT` detects failing test suites or broken API contracts, it routes the defect report directly back to the Developers.
+3. **PO Business Rejection:** `PO AGENT (Phase 2)` performs the final audit. If any binary acceptance criteria from `docs/SCOPE.md` are unmet, it rejects the build and attaches targeted corrective directives.
+4. **Human Escalation:** If any rejection gate fails and `iteration_count >= 3`, the workflow pauses with status `HUMAN_INTERVENTION_REQUIRED`.
 
 ---
 
