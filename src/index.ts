@@ -46,7 +46,7 @@ const DEEPSEEK_COST_PER_OUTPUT_TOKEN = 0.28 / 1_000_000;
 mkdirSync(WORKDIR, { recursive: true });
 
 const llm = new ChatOpenAI({
-    model: process.env.DEEPSEEK_MODEL ?? "DeepSeek-V4.1-Flash-1017",
+    model: process.env.DEEPSEEK_MODEL ?? "deepseek-flash",
     temperature: 0.2,
     maxTokens: 32000,
     apiKey: process.env.DEEPSEEK_API_KEY,
