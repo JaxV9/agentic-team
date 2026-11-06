@@ -20,7 +20,7 @@ The development cycle is structured around 3 main phases: **Framing & Isolation*
 ┌────────────────────────────────────────┐
 │   ⏸️  WAITING_HUMAN_VALIDATION         │
 └────────────────────────────────────────┘
-│ ─── (User validation)
+│ ─── (User validation: GO / NO-GO)
 ▼
 2. GIT AGENT (Mode: INIT)
 │ ─── (Create feature branch after PO scope approval)
@@ -31,26 +31,34 @@ The development cycle is structured around 3 main phases: **Framing & Isolation*
 ┌────────────────────────────────────────────────────────────────────────┐
 │ 🔄 Execution & Retroaction Loop (LangGraph - Max 3 iterations)         │
 │                                                                        │
-│   4. BACKEND & FRONTEND DEV AGENTS                                     │
-│        │ ─── (Implementation -> BACKEND_SUMMARY & FRONTEND_SUMMARY)   │
+│   4. BACKEND DEV AGENT                                                 │
+│        │ ─── (Implementation -> docs/BACKEND_SUMMARY.md)              │
 │        ▼                                                               │
-│   5. CYBER SECURITY AGENT                                              │
+│   5. FRONTEND DEV AGENT                                                │
+│        │ ─── (Implementation -> docs/FRONTEND_SUMMARY.md)             │
+│        ▼                                                               │
+│   6. CYBER SECURITY AGENT                                              │
 │        ├── ❌ Security Flaws Detected ──> [Retry Devs/Architect]       │
 │        └── ✅ Security Gate Passed                                     │
 │        ▼                                                               │
-│   6. QA / TEST AGENT                                                   │
+│   7. QA / TEST AGENT                                                   │
 │        ├── ❌ Test Suite Failures ─────> [Retry Devs/Architect]       │
 │        └── ✅ Tests Passed                                             │
 │        ▼                                                               │
-│   7. PO AGENT (Phase 2: Review & Scope Audit)                          │
+│   8. PO AGENT (Phase 2: Review & Scope Audit)                          │
 │        ├── ❌ REJECTED (Scope Gap / Iteration < 3)  ──> [Retry Loop]   │
 │        ├── ⚠️ REJECTED (Scope Gap / Iteration >= 3) ──> [Human Escalation]
 │        └── ✅ VALIDATED (GO) ────────────────────────> [Exit loop]    │
 └────────────────────────────────────────────────────────────────────────┘
 │
 ▼
-4. GIT AGENT (Mode: FINALIZE)
+9. GIT AGENT (Mode: FINALIZE)
 │ ─── (Commit, Tag vX.Y.Z, PR & Release -> docs/RELEASE_NOTES.md)
+▼
+┌────────────────────────────────────────┐
+│   ⏸️  WAITING_HUMAN_VALIDATION         │
+└────────────────────────────────────────┘
+│ ─── (Final approval)
 ▼
 [ Workflow End ]
 
@@ -63,14 +71,16 @@ The development cycle is structured around 3 main phases: **Framing & Isolation*
 | Order  | Agent                      | Core Role                                                                                        | Generated Artifacts / Files                       |
 | :----: | :------------------------- | :----------------------------------------------------------------------------------------------- | :------------------------------------------------ |
 | **1**  | **PO Agent** (Phase 1)     | Analyzes requirements, defines IN/OUT scope, and establishes binary criteria.                    | `docs/SCOPE.md`                                   |
+| **—**  | **⏸️ Human Validation**    | Approves or rejects the scope before any technical work begins.                                  | —                                                 |
 | **2**  | **Git Agent** (`INIT`)     | Initializes workspace and creates an isolated Git branch (`feature/...`) upon PO scope approval. | State Payload (`INIT`)                            |
 | **3**  | **Architect Agent**        | Designs technical architecture and defines interface contracts (API/DTOs).                       | `docs/ARCHITECTURE.md`<br>`docs/API_CONTRACTS.md` |
-| **4a** | **Backend Dev Agent**      | Implements backend business logic, persistence, and API endpoints.                               | `docs/BACKEND_SUMMARY.md`                         |
-| **4b** | **Frontend Dev Agent**     | Implements user interface, state management, and API integrations.                               | `docs/FRONTEND_SUMMARY.md`                        |
-| **5**  | **Cyber Security Agent**   | Audits code and schemas against security risks (OWASP, RBAC, leaks).                             | `docs/CYBER_REPORT.md`                            |
-| **6**  | **QA / Test Agent**        | Executes automated test suites and evaluates acceptance criteria compliance.                     | `docs/QA_REPORT.md`                               |
-| **7**  | **PO Agent** (Phase 2)     | Performs final audit and autonomous decision (`VALIDATED` vs `REJECTED`).                        | Control Payload                                   |
-| **8**  | **Git Agent** (`FINALIZE`) | Versions code (`SemVer`), writes release notes, and creates PR/Tag after PO approval.            | `docs/RELEASE_NOTES.md`<br>`CHANGELOG.md`         |
+| **4**  | **Backend Dev Agent**      | Implements backend business logic, persistence, and API endpoints.                               | `docs/BACKEND_SUMMARY.md`                         |
+| **5**  | **Frontend Dev Agent**     | Implements user interface, state management, and API integrations.                               | `docs/FRONTEND_SUMMARY.md`                        |
+| **6**  | **Cyber Security Agent**   | Audits code and schemas against security risks (OWASP, RBAC, leaks).                             | `docs/CYBER_REPORT.md`                            |
+| **7**  | **QA / Test Agent**        | Executes automated test suites and evaluates acceptance criteria compliance.                     | `docs/QA_REPORT.md`                               |
+| **8**  | **PO Agent** (Phase 2)     | Performs final audit and autonomous decision (`VALIDATED` vs `REJECTED`).                        | Control Payload                                   |
+| **9**  | **Git Agent** (`FINALIZE`) | Versions code (`SemVer`), writes release notes, and creates PR/Tag after PO approval.            | `docs/RELEASE_NOTES.md`<br>`CHANGELOG.md`         |
+| **—**  | **⏸️ Human Validation**    | Final approval before closing the workflow.                                                      | —                                                 |
 
 ---
 
@@ -104,4 +114,4 @@ All inter-agent exchanges and decisions rely on structured Markdown files inside
 
 - **Zero Code in Architecture / PO:** PO and Architect agents write no executable application code.
 - **No Design Component:** The Design Agent has been removed from the pipeline in favor of direct contracts between the Architect and Developer agents.
-- **Mandatory Human Validation:** The workflow pauses after Phase 1 of the PO Agent (`WAITING_HUMAN_VALIDATION`) to approve the initial roadmap before branch creation and technical design start.
+- **Mandatory Human Validation:** The workflow pauses **twice**: after Phase 1 of the PO Agent (`WAITING_HUMAN_VALIDATION`) to approve the initial roadmap before branch creation, and again after the Git Agent (`FINALIZE`) for a final approval before the workflow closes.
