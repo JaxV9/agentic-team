@@ -95,7 +95,7 @@ Structure your markdown response following this exact template:
     "architecture_doc": "docs/ARCHITECTURE.md",
     "api_contracts_doc": "docs/API_CONTRACTS.md"
   },
-  "next_agents": ["Backend Developer Agent", "Frontend Developer Agent"],
+  "next_agent": "Backend Developer Agent",
   "architecture_summary": {
     "backend_tech_stack": {
       "language": "Language & version",

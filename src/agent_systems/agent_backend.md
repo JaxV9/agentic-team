@@ -69,7 +69,7 @@ Structure your markdown response following this exact template:
   "artifacts": {
     "summary_doc": "docs/BACKEND_SUMMARY.md"
   },
-  "next_agent": "Cyber Security Agent",
+  "next_agent": "Frontend Developer Agent",
   "implementation_summary": {
     "language": "Language used",
     "framework": "Framework used",

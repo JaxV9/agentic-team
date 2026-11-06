@@ -43,7 +43,7 @@ CRITICAL DIRECTIVE: In `FINALIZE` mode, you ONLY execute when the PO Agent statu
     "feature_branch": "feature/task-initialization",
     "is_clean": true
   },
-  "next_agent": "PO Agent"
+  "next_agent": "Architect Agent"
 }
 ```
 
