@@ -49,9 +49,10 @@ const llm = new ChatOpenAI({
     model: process.env.DEEPSEEK_MODEL ?? "DeepSeek-V4.1-Flash-1017",
     temperature: 0.2,
     maxTokens: 32000,
+    apiKey: process.env.DEEPSEEK_API_KEY,
     openAIApiKey: process.env.DEEPSEEK_API_KEY,
     configuration: {
-        baseURL: "https://api.deepseek.com/v1",
+        baseURL: "https://api.deepseek.com",
     },
 });
 

@@ -1,2 +1,2 @@
 run:
-	npm run dev
+	npx tsx --env-file=.env src/run.ts
