@@ -8,7 +8,7 @@
 
 `agentic-team` is an **autonomous AI agent orchestrator** built with **LangGraph** (TypeScript). It simulates a software development team made up of specialized agents, each with a precise role in a sequential delivery pipeline.
 
-The LLM used is **local Ollama** (model: `qwen2.5-coder:7b`, `temperature: 0.2`, `numCtx: 8192`).
+The LLM used is **DeepSeek API** (model: `deepseek-chat` by default, `temperature: 0.2`, `maxTokens: 6000`). Requires `DEEPSEEK_API_KEY` env var. Model can be overridden with `DEEPSEEK_MODEL`.
 
 ---
 
@@ -19,7 +19,7 @@ The LLM used is **local Ollama** (model: `qwen2.5-coder:7b`, `temperature: 0.2`,
 | Language      | TypeScript (ESM, `"type": "module"`)  |
 | Runtime       | Node.js                               |
 | Orchestration | `@langchain/langgraph` ^1.7.0         |
-| LLM           | `@langchain/ollama` → local Ollama    |
+| LLM           | `@langchain/openai` → DeepSeek API    |
 | Build         | `tsc` → `dist/`                       |
 | Dev           | `tsx watch src/index.ts`              |
 
@@ -55,7 +55,7 @@ agentic-team/
 
 The [`src/index.ts`](src/index.ts) file defines:
 
-1. **The LLM**: a shared `ChatOllama` instance used by all agents.
+1. **The LLM**: a shared `ChatOpenAI` instance (pointing to DeepSeek API) used by all agents.
 2. **The State**: a LangGraph `Annotation.Root` with 3 fields:
    - `input: string` — the initial user request
    - `result: string` — the last agent output
@@ -130,5 +130,5 @@ PO Agent
 - **Never modify agent prompts** without understanding their JSON control payload — that is what LangGraph uses for routing.
 - **`next_agent`** (singular, string) is the convention across all payloads — not `next_agents` (array).
 - Agents **do not write application code** in their prompts — they produce Markdown specs and reports.
-- The LLM runs **locally via Ollama** — no API key required, but Ollama must be running locally.
+- The LLM runs **via the DeepSeek API** — requires `DEEPSEEK_API_KEY` to be set. No local model needed.
 
