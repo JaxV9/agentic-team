@@ -28,7 +28,7 @@ const SOURCE_BUDGET = 200000;
  * Maximum cumulative budget in USD before triggering the emergency kill switch.
  * Protects against runaway costs from infinite retry loops.
  */
-export const MAX_BUDGET = Number(process.env.MAX_BUDGET ?? 2.0);
+export const MAX_BUDGET = Number(process.env.MAX_BUDGET ?? 1.0);
 
 /**
  * Maximum execution steps allowed across graph transitions.
